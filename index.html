@@ -291,6 +291,20 @@ html{scroll-behavior:auto}
 .occ li:active{background:linear-gradient(135deg,#9a2558 0%,#6a1238 55%,#560b2c 100%);color:#fff}
 .occ li:active a::before{color:#fff}
 .btn,.btn:hover,.btn:active,.btn:focus,.btn.alt,.btn.alt:hover,.btn.alt:active,.btn:not(.alt),.btn:not(.alt):hover{background:linear-gradient(135deg,#9a2558 0%,#6a1238 55%,#560b2c 100%);background-size:100% 100%;background-position:0 0;color:#fff;border-color:#6a1238;box-shadow:0 10px 22px rgba(110,18,56,.28);transform:none}
+
+/* ===== Scroll-Effekte (leicht) + Karussell ===== */
+.fx{opacity:0;transform:translateY(26px)}
+.fx.fx{transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.fx.in{opacity:1;transform:none}
+.gal .fx{transform:translateY(34px) scale(.97)}
+.gal .fx.in{transform:none}
+.stack img{will-change:transform}
+
+/* ===== Anlass-Felder: nur Anzeige, nicht antippbar ===== */
+.occ li{padding:12px 22px;cursor:default;pointer-events:none;-webkit-user-select:none;user-select:none}
+.occ li::before{content:"♡";margin-right:8px;color:var(--rose)}
+.occ li:hover,.occ li:active{background:rgba(255,255,255,.7);color:var(--wine);transform:none}
+@media(hover:hover){.occ li:hover{background:rgba(255,255,255,.7);color:var(--wine)}}
 </style>
 </head>
 <body>
@@ -314,6 +328,11 @@ html{scroll-behavior:auto}
 <li><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-12 8 8z"/><path d="M13 5v.01M18 8v.01M19 13v.01M16 3l1 2M20 5l-2 1"/></svg></i><span>Für jeden Anlass – ob Geburtstag, Dankeschön oder besondere Momente</span></li>
 </ul>
 </div>
+<div class="orbit">
+<svg class="deco ph1" viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+<svg class="deco ph2" viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+<div class="stack" id="stack" role="group" aria-label="Drei Geschenkkörbe, drehbar" tabindex="0"></div>
+</div>
 
 </div>
 </header>
@@ -324,7 +343,7 @@ html{scroll-behavior:auto}
 <h2>Für jeden Anlass</h2>
 <p class="lead">Ich mache wirklich alles. Wenn dein Anlass nicht dabei ist, frag einfach nach.</p>
 <ul class="occ">
-<li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20zum%20Geburtstag." target="_blank" rel="noopener">Geburtstag</a></li><li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20zum%20Jahrestag." target="_blank" rel="noopener">Jahrestag</a></li><li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20zum%20Abschied." target="_blank" rel="noopener">Abschied</a></li><li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20zur%20Hochzeit." target="_blank" rel="noopener">Hochzeit</a></li><li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20als%20Dankesch%C3%B6n." target="_blank" rel="noopener">Dankeschön</a></li><li><a href="https://wa.me/41764334080?text=Hallo%20Fabienne%2C%20ich%20h%C3%A4tte%20gerne%20einen%20Geschenkkorb%20nach%20meinem%20eigenen%20Wunsch%3A%20" target="_blank" rel="noopener">Dein eigener Wunsch</a></li>
+<li>Geburtstag</li><li>Jahrestag</li><li>Abschied</li><li>Hochzeit</li><li>Dankeschön</li><li>Dein eigener Wunsch</li>
 </ul>
 </div>
 </section>
@@ -395,6 +414,81 @@ function buildGal(){
 }
 buildGal();window.addEventListener('resize',buildGal);
 lb.addEventListener('click',function(e){if(e.target!==lbi)lb.close();});
+
+var st=document.getElementById('stack');
+var cards=[1,0,3].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='Handgemachter Geschenkkorb, Beispiel '+(k+1);im.draggable=false;st.appendChild(im);return im;});
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var AUTO=10,dir=-1,rot=0,vel=reduce?0:-AUTO,goal=null,dragging=false,lastX=0,lastT=0,prev=0,visible=true;
+  function R(){return st.clientWidth*0.33;}
+  function render(){
+    var w=st.clientWidth,r=R();
+    cards.forEach(function(el,i){
+      var a=(rot+i*120)*Math.PI/180,sn=Math.sin(a),cs=Math.cos(a),d=(cs+1)/2;
+      el.style.transform='translate(-50%,-50%) translate3d('+(sn*r).toFixed(1)+'px,'+(cs*w*0.05).toFixed(1)+'px,0) rotate('+(sn*7).toFixed(1)+'deg) scale('+(0.7+0.3*d).toFixed(3)+')';
+      el.style.opacity=1;
+      el.style.zIndex=Math.round(d*10);
+    });
+  }
+  function tick(t){
+    var dt=Math.min((t-prev)/1000||0,0.05);prev=t;
+    if(visible){
+      if(!dragging){
+        if(goal!==null){rot+=(goal-rot)*(1-Math.pow(0.0005,dt));if(Math.abs(goal-rot)<0.1){rot=goal;goal=null;}}
+        else{vel+=((reduce?0:dir*AUTO)-vel)*(1-Math.pow(0.45,dt));rot+=vel*dt;}
+      }
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+  st.addEventListener('pointerdown',function(e){dragging=true;goal=null;vel=0;lastX=e.clientX;lastT=performance.now();st.classList.add('drag');try{st.setPointerCapture(e.pointerId);}catch(_){}});
+  st.addEventListener('pointermove',function(e){
+    if(!dragging)return;
+    var now=performance.now(),dx=e.clientX-lastX,dtm=Math.max(now-lastT,1)/1000,deg=dx/R()*(180/Math.PI);
+    rot+=deg;vel=Math.max(-1200,Math.min(1200,0.5*vel+0.5*(deg/dtm)));lastX=e.clientX;lastT=now;
+  });
+  function end(){
+    if(!dragging)return;dragging=false;st.classList.remove('drag');
+    if(performance.now()-lastT>120)vel=0;
+    if(Math.abs(vel)>5)dir=vel>0?1:-1;
+  }
+  st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
+  function step(d){vel=0;var base=Math.round(rot/120)*120;goal=base+d*120;if(reduce){rot=goal;goal=null;}}
+  st.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){step(-1);e.preventDefault();}else if(e.key==='ArrowLeft'){step(1);e.preventDefault();}});
+  if('IntersectionObserver' in window){new IntersectionObserver(function(en){visible=en[0].isIntersecting;}).observe(st);}
+  window.addEventListener('resize',render);
+  render();requestAnimationFrame(tick);
+})();
+/* Sanftes, schnelles Scrollen zu Ankern (z. B. «Körbe ansehen») */
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches,raf=0;
+  function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+  function go(y){
+    if(reduce){window.scrollTo(0,y);return;}
+    var y0=window.pageYOffset,d=y-y0,dur=Math.min(900,Math.max(450,Math.abs(d)*0.35)),t0=null;
+    cancelAnimationFrame(raf);
+    function stop(){cancelAnimationFrame(raf);}
+    window.addEventListener('touchstart',stop,{passive:true,once:true});
+    window.addEventListener('wheel',stop,{passive:true,once:true});
+    function f(t){if(t0===null)t0=t;var p=Math.min((t-t0)/dur,1);window.scrollTo(0,y0+d*ease(p));if(p<1)raf=requestAnimationFrame(f);}
+    raf=requestAnimationFrame(f);
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;
+    var id=a.getAttribute('href').slice(1),el=id&&document.getElementById(id);if(!el)return;
+    e.preventDefault();go(el.getBoundingClientRect().top+window.pageYOffset-8);
+  });
+})();
+/* Leichte Einblend-Effekte beim Runterscrollen (nur Deckkraft + Verschiebung, einmalig) */
+(function(){
+  if(!('IntersectionObserver' in window)||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.1,rootMargin:'0px 0px -5% 0px'});
+  document.querySelectorAll('main h2,main .lead,.occ li,.steps li,.pay li,.contact .cta,.contact .small,.gal button,.sign').forEach(function(el){
+    var sib=Array.prototype.indexOf.call(el.parentNode.children,el);
+    el.style.transitionDelay=((sib%4)*0.08).toFixed(2)+'s';
+    el.classList.add('fx');io.observe(el);
+  });
+})();
 </script>
 </body>
 </html>
