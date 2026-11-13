@@ -453,6 +453,21 @@ body{background:none!important;min-height:100vh;overflow-x:hidden}
 .gal button:active,.grid4 button:active{scale:.94}
 .occ li:active{scale:.94}
 @media(prefers-reduced-motion:reduce){.btn,.btn:not(.alt),.btn.alt{animation:none}.btn:hover,.btn:active{transform:none!important}}
+
+/* ===== Anlass-Kategorien: nicht antippbar, ohne Effekt ===== */
+.occ,.occ li{pointer-events:none!important;cursor:default!important;-webkit-user-select:none;user-select:none}
+.occ li,.occ li:hover,.occ li:active{translate:none!important;scale:none!important;transform:none!important;background:rgba(255,255,255,.7)!important;color:var(--wine)!important;border-color:#f1c7b8!important;box-shadow:0 0 0 1px rgba(212,162,87,.3)!important;transition:none!important}
+.occ li::before,.occ li:hover::before,.occ li:active::before{transform:none!important;color:var(--rose)!important}
+
+/* ===== Effekte auch auf dem Handy gut sichtbar (Antippen) ===== */
+.btn:active{transform:scale(.93)!important;box-shadow:0 0 0 4px rgba(200,70,127,.35),0 6px 14px rgba(110,18,56,.4)!important;filter:brightness(1.15)}
+.btn:active svg{transform:scale(1.2) rotate(-8deg)}
+.gal button:active,.grid4 button:active{scale:.94;translate:0 -3px;box-shadow:0 0 0 2px rgba(212,162,87,.95),0 14px 28px rgba(107,18,56,.35)}
+.gal button:active img,.grid4 button:active img{transform:scale(1.08)}
+.x:active{transform:rotate(90deg) scale(.9);background:#fde6ec}
+
+/* ===== Karussell: weiter auseinander, Karten tauschen ohne Überlappung, flüssig ===== */
+.stack img,.stack img:first-child,.stack img:last-child{width:52%;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:none!important}
 </style>
 </head>
 <body>
@@ -571,14 +586,14 @@ var cards=[1,0,3,4].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='
 (function(){
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
   var STEP=360/cards.length,AUTO=10,dir=-1,rot=0,vel=reduce?0:-AUTO,goal=null,dragging=false,lastX=0,lastT=0,prev=0,visible=true;
-  function R(){return st.clientWidth*0.33;}
+  function R(){return st.clientWidth*0.38;}
   function render(){
     var w=st.clientWidth,r=R();
     cards.forEach(function(el,i){
       var a=(rot+i*STEP)*Math.PI/180,sn=Math.sin(a),cs=Math.cos(a),d=(cs+1)/2;
       el.style.transform='translate(-50%,-50%) translate3d('+(sn*r).toFixed(1)+'px,'+(cs*w*0.05).toFixed(1)+'px,0) rotate('+(sn*7).toFixed(1)+'deg) scale('+(0.7+0.3*d).toFixed(3)+')';
       el.style.opacity=1;
-      el.style.zIndex=Math.round(d*10);
+      el.style.zIndex=Math.round(d*1000);
     });
   }
   function tick(t){
