@@ -601,19 +601,37 @@ var cards=[1,0,3,4].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='
     if(visible){
       if(!dragging){
         if(goal!==null){rot+=(goal-rot)*(1-Math.pow(0.0005,dt));if(Math.abs(goal-rot)<0.1){rot=goal;goal=null;}}
-        else{vel+=((reduce?0:dir*AUTO)-vel)*(1-Math.pow(0.45,dt));rot+=vel*dt;}
+        else{vel+=((reduce?0:dir*AUTO)-vel)*(1-Math.pow(0.04,dt));rot+=vel*dt;}
       }
       render();
     }
     requestAnimationFrame(tick);
   }
-  st.addEventListener('pointerdown',function(e){dragging=true;goal=null;vel=0;lastX=e.clientX;lastT=performance.now();st.classList.add('drag');try{st.setPointerCapture(e.pointerId);}catch(_){}});
+  var pend=false,sx=0,sy=0,lastScroll=0;
+  window.addEventListener('scroll',function(){lastScroll=performance.now();},{passive:true});
+  function still(ms){return performance.now()-lastScroll>ms;}
+  st.addEventListener('pointerdown',function(e){
+    if(!still(250))return;
+    pend=true;sx=e.clientX;sy=e.clientY;lastX=e.clientX;lastT=performance.now();
+  });
   st.addEventListener('pointermove',function(e){
+    var now=performance.now();
+    if(pend&&!dragging){
+      var ax=Math.abs(e.clientX-sx),ay=Math.abs(e.clientY-sy);
+      if(ay>8&&ay>ax){pend=false;return;}
+      if(ax>14&&ax>ay*1.6&&still(250)){
+        pend=false;dragging=true;goal=null;vel=0;lastX=e.clientX;lastT=now;
+        st.classList.add('drag');try{st.setPointerCapture(e.pointerId);}catch(_){}
+      }
+      return;
+    }
     if(!dragging)return;
-    var now=performance.now(),dx=e.clientX-lastX,dtm=Math.max(now-lastT,1)/1000,deg=dx/R()*(180/Math.PI);
-    rot+=deg;vel=Math.max(-1200,Math.min(1200,0.5*vel+0.5*(deg/dtm)));lastX=e.clientX;lastT=now;
+    if(!still(120)){end();return;}
+    var dx=e.clientX-lastX,dtm=Math.max(now-lastT,1)/1000,deg=dx/R()*(180/Math.PI)*0.55;
+    rot+=deg;vel=Math.max(-110,Math.min(110,0.5*vel+0.5*(deg/dtm)));lastX=e.clientX;lastT=now;
   });
   function end(){
+    pend=false;
     if(!dragging)return;dragging=false;st.classList.remove('drag');
     if(performance.now()-lastT>120)vel=0;
     if(Math.abs(vel)>5)dir=vel>0?1:-1;
