@@ -433,6 +433,26 @@ body{background:none!important;min-height:100vh;overflow-x:hidden}
 .contact .small a,footer a{text-decoration:none;background:linear-gradient(var(--gold),var(--gold)) 0 100%/0 1.5px no-repeat;transition:background-size .35s var(--ease)}
 @media(hover:hover){.contact .small a:hover,footer a:hover{background-size:100% 1.5px}}
 @media(prefers-reduced-motion:reduce){.occ li,.occ li::before,.contact .small a,footer a{transition:none!important}}
+
+/* ===== Effekte deutlicher ===== */
+.btn{transition:transform .3s var(--ease),box-shadow .3s var(--ease),filter .3s!important}
+.btn::after{width:55%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent);animation-duration:3.6s}
+.btn svg{transition:transform .35s var(--ease)}
+.btn:not(.alt),.btn.alt{animation:btnglow 3.6s ease-in-out infinite}
+@keyframes btnglow{0%,100%{box-shadow:0 10px 22px rgba(110,18,56,.28)}50%{box-shadow:0 12px 30px rgba(200,70,127,.5)}}
+.btn:active{transform:scale(.94)!important;filter:brightness(.92)}
+@media(hover:hover){
+.btn:hover{transform:translateY(-6px) scale(1.04)!important;box-shadow:0 20px 36px rgba(110,18,56,.45)!important;filter:brightness(1.12);animation:none}
+.btn:hover svg{transform:scale(1.18) rotate(-8deg)}
+.gal button:hover,.grid4 button:hover{translate:0 -7px;box-shadow:0 0 0 2px rgba(212,162,87,.95),0 20px 38px rgba(107,18,56,.38)}
+.gal button:hover img,.grid4 button:hover img{transform:scale(1.1)}
+.occ li:hover{translate:0 -5px;scale:1.06;background:linear-gradient(135deg,#9a2558,#560b2c);color:#fff;border-color:#d4a257;box-shadow:0 12px 24px rgba(107,18,56,.35)}
+.occ li:hover::before{color:#fff;transform:scale(1.4) rotate(-10deg)}
+.x:hover{transform:rotate(180deg) scale(1.15)}
+}
+.gal button:active,.grid4 button:active{scale:.94}
+.occ li:active{scale:.94}
+@media(prefers-reduced-motion:reduce){.btn,.btn:not(.alt),.btn.alt{animation:none}.btn:hover,.btn:active{transform:none!important}}
 </style>
 </head>
 <body>
