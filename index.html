@@ -409,7 +409,7 @@ main h2{display:block}
 <div class="orbit">
 <svg class="deco ph1" viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
 <svg class="deco ph2" viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
-<div class="stack" id="stack" role="group" aria-label="Drei Geschenkkörbe, drehbar" tabindex="0"></div>
+<div class="stack" id="stack" role="group" aria-label="Vier Geschenkkörbe, drehbar" tabindex="0"></div>
 </div>
 
 </div>
@@ -494,15 +494,15 @@ buildGal();window.addEventListener('resize',buildGal);
 lb.addEventListener('click',function(e){if(e.target!==lbi)lb.close();});
 
 var st=document.getElementById('stack');
-var cards=[1,0,3].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='Handgemachter Geschenkkorb, Beispiel '+(k+1);im.draggable=false;st.appendChild(im);return im;});
+var cards=[1,0,3,4].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='Handgemachter Geschenkkorb, Beispiel '+(k+1);im.draggable=false;st.appendChild(im);return im;});
 (function(){
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
-  var AUTO=10,dir=-1,rot=0,vel=reduce?0:-AUTO,goal=null,dragging=false,lastX=0,lastT=0,prev=0,visible=true;
+  var STEP=360/cards.length,AUTO=10,dir=-1,rot=0,vel=reduce?0:-AUTO,goal=null,dragging=false,lastX=0,lastT=0,prev=0,visible=true;
   function R(){return st.clientWidth*0.33;}
   function render(){
     var w=st.clientWidth,r=R();
     cards.forEach(function(el,i){
-      var a=(rot+i*120)*Math.PI/180,sn=Math.sin(a),cs=Math.cos(a),d=(cs+1)/2;
+      var a=(rot+i*STEP)*Math.PI/180,sn=Math.sin(a),cs=Math.cos(a),d=(cs+1)/2;
       el.style.transform='translate(-50%,-50%) translate3d('+(sn*r).toFixed(1)+'px,'+(cs*w*0.05).toFixed(1)+'px,0) rotate('+(sn*7).toFixed(1)+'deg) scale('+(0.7+0.3*d).toFixed(3)+')';
       el.style.opacity=1;
       el.style.zIndex=Math.round(d*10);
@@ -531,7 +531,7 @@ var cards=[1,0,3].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='Ha
     if(Math.abs(vel)>5)dir=vel>0?1:-1;
   }
   st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
-  function step(d){vel=0;var base=Math.round(rot/120)*120;goal=base+d*120;if(reduce){rot=goal;goal=null;}}
+  function step(d){vel=0;var base=Math.round(rot/STEP)*STEP;goal=base+d*STEP;if(reduce){rot=goal;goal=null;}}
   st.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){step(-1);e.preventDefault();}else if(e.key==='ArrowLeft'){step(1);e.preventDefault();}});
   if('IntersectionObserver' in window){new IntersectionObserver(function(en){visible=en[0].isIntersecting;}).observe(st);}
   window.addEventListener('resize',render);
