@@ -468,6 +468,13 @@ body{background:none!important;min-height:100vh;overflow-x:hidden}
 
 /* ===== Karussell: weiter auseinander, Karten tauschen ohne Überlappung, flüssig ===== */
 .stack img,.stack img:first-child,.stack img:last-child{width:52%;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:none!important}
+
+/* ===== Bilder blenden beim Runterscrollen weich ein ===== */
+.gal button.fx{transition:opacity .9s var(--ease) var(--fd,0s),transform .9s var(--ease) var(--fd,0s),translate .35s var(--ease),box-shadow .35s var(--ease),rotate .35s var(--ease)!important}
+.gal button.fx:not(.in){opacity:0;transform:translateY(52px) scale(.92)}
+.gal button.fx.in{opacity:1;transform:none}
+.gal button.fx:not(.in) img{transform:scale(1.15)}
+.gal button.fx img{transition:transform 1.1s var(--ease)!important}
 </style>
 </head>
 <body>
@@ -669,7 +676,7 @@ var cards=[1,0,3,4].map(function(i,k){var im=new Image();im.src=IMGS[i];im.alt='
   var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.1,rootMargin:'0px 0px -5% 0px'});
   document.querySelectorAll('main h2,main .lead,.occ li,.steps li,.pay li,.contact .cta,.contact .small,.gal button,.sign').forEach(function(el){
     var sib=Array.prototype.indexOf.call(el.parentNode.children,el);
-    el.style.transitionDelay=((sib%4)*0.08).toFixed(2)+'s';
+    el.style.transitionDelay=((sib%4)*0.08).toFixed(2)+'s';el.style.setProperty('--fd',((sib%4)*0.12).toFixed(2)+'s');
     el.classList.add('fx');io.observe(el);
   });
 })();
