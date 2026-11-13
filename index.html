@@ -386,6 +386,16 @@ main h2{display:block}
 /* ===== Hintergrund über die ganze Seite (auch beim Überscrollen/Zoomen) ===== */
 html{min-height:100%;background-color:#f6bfcf}
 body{background:none!important;min-height:100vh;overflow-x:hidden}
+
+/* Kontakt-Buttons untereinander */
+.contact .cta{display:flex;flex-direction:column;align-items:center;gap:14px}
+.contact .cta .btn{width:min(100%,320px);text-align:center;justify-content:center}
+
+/* Kontakt-Buttons im Zickzack: links, rechts, links, rechts */
+.contact .cta{align-items:stretch;width:min(100%,360px);margin-left:auto;margin-right:auto}
+.contact .cta .btn{width:68%;min-width:0}
+.contact .cta .btn:nth-child(odd){align-self:flex-start}
+.contact .cta .btn:nth-child(even){align-self:flex-end}
 </style>
 </head>
 <body>
@@ -467,11 +477,12 @@ body{background:none!important;min-height:100vh;overflow-x:hidden}
 <h2>Schreib mir einfach</h2>
 <p class="lead">Erzähl mir, für wen der Korb ist und was ihr oder ihm Freude machen würde.</p>
 <div class="cta">
-<a class="btn" href="https://wa.me/41764334080" target="_blank" rel="noopener">WhatsApp +41 76 433 40 80</a>
+<a class="btn" href="https://wa.me/41764334080" target="_blank" rel="noopener">WhatsApp</a>
+<a class="btn alt" href="mailto:Fabienne.Mastrovito@icloud.com">E-Mail</a>
 <a class="btn alt" href="https://www.instagram.com/mastrovitofabienne" target="_blank" rel="noopener">Instagram</a>
 <a class="btn alt" href="https://www.facebook.com/search/top?q=Fabienne%20Mastrovito" target="_blank" rel="noopener">Facebook</a>
 </div>
-<p class="small">Auf Facebook findest du mich als «Fabienne Mastrovito».</p>
+<p class="small"><a href="mailto:Fabienne.Mastrovito@icloud.com" style="color:inherit">Fabienne.Mastrovito@icloud.com</a></p>
 </div>
 </section>
 </main>
